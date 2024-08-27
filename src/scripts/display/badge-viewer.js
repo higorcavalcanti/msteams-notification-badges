@@ -1,43 +1,48 @@
 class BadgeViewer {
-    static OVERLAY_CLASS = 'overlay';
+  static OVERLAY_CLASS = 'overlay';
 
-    static updateTaskbarBadgeIcon = () => {
-        navigator.setAppBadge(
-            BadgeStorage.get()
-        );
+  static updateTaskbarBadgeIcon = () => {
+    navigator.setAppBadge(
+      BadgeStorage.get()
+    );
+  }
+
+  static updateOverlayCount = () => {
+    const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS} > div`);
+
+    if (overlay) {
+      overlay.innerText = BadgeStorage.get();
     }
+  }
 
-    static updateOverlayCount = () => {
-        const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS} > div`);
+  static drawAttention = () => {
+      chrome.runtime.sendMessage({ message_id: 'draw_attention' });
+  }
 
-        if (overlay) {
-            overlay.innerText = BadgeStorage.get();
-        }
+
+  static createOverlay = () => {
+    const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS}`);
+
+    if (!overlay) {
+      const overlay = document.createElement('div');
+      overlay.className = BadgeViewer.OVERLAY_CLASS;
+
+      const notification = document.createElement('div');
+
+      const unreadNotificationsCount = BadgeStorage.get();
+      notification.innerText = unreadNotificationsCount;
+
+      overlay.appendChild(notification);
+      document.body.appendChild(overlay);
     }
+  }
 
-    static createOverlay = () => {
-        const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS}`);
+  static hideOverlay = () => {
+    const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS}`);
 
-        if (!overlay) {
-            const overlay = document.createElement('div');
-            overlay.className = BadgeViewer.OVERLAY_CLASS;
-
-            const notification = document.createElement('div');
-
-            const unreadNotificationsCount = BadgeStorage.get();
-            notification.innerText = unreadNotificationsCount;
-
-            overlay.appendChild(notification);
-            document.body.appendChild(overlay);
-        }
+    if (overlay) {
+      document.body.removeChild(overlay);
     }
+  }
 
-    static hideOverlay = () => {
-        const overlay = document.querySelector(`.${BadgeViewer.OVERLAY_CLASS}`);
-
-        if (overlay) {
-            document.body.removeChild(overlay);
-        }
-    }
-    
 }

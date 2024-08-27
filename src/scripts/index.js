@@ -8,6 +8,7 @@ const main = async () => {
             () => {
                 BadgeViewer.updateTaskbarBadgeIcon();
                 BadgeViewer.updateOverlayCount();
+                BadgeViewer.drawAttention();
             }
         );
 
